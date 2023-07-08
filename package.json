@@ -1,0 +1,35 @@
+{
+  "name": "use-current-date",
+  "version": "0.1.2",
+  "description": "A react hook that always returns the current date and rerenders the component when the date changes",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "author": "Bethany Hitch <bethany.e.hitch@gmail.com>",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@types/jest": "^29.5.2",
+    "@types/react": "^18.2.14",
+    "jest": "^29.6.1",
+    "jest-environment-jsdom": "^29.6.1",
+    "moment": "^2.29.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-test-renderer": "^18.2.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.1.6"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  }
+}
