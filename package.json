@@ -1,10 +1,14 @@
 {
   "name": "use-current-date",
-  "version": "0.1.2",
+  "version": "0.1.0",
   "description": "A react hook that always returns the current date and rerenders the component when the date changes",
   "main": "index.js",
   "types": "index.d.ts",
-  "author": "Bethany Hitch <bethany.e.hitch@gmail.com>",
+  "author": "Bethany Hitch <bethany.e.hitch@gmail.com> (https://dfdx.us)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dfoverdx/use-current-date.git"
+  },
   "scripts": {
     "build": "tsc",
     "test": "jest"
@@ -14,7 +18,6 @@
     "index.d.ts"
   ],
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
@@ -23,6 +26,7 @@
     "jest": "^29.6.1",
     "jest-environment-jsdom": "^29.6.1",
     "moment": "^2.29.4",
+    "npm-bump": "^0.0.33",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-test-renderer": "^18.2.0",

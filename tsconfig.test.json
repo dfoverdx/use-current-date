@@ -3,5 +3,9 @@
   "compilerOptions": {
     "noUnusedLocals": false,
     "noUnusedParameters": false
-  }
+  },
+  "include": [
+    "index.ts",
+    "index.test.tsx"
+  ]
 }
