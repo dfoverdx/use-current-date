@@ -12,6 +12,6 @@ exports[`basic options with returnCurrentTime returns current time and refreshes
 
 exports[`basic options with returnCurrentTime returns current time and refreshes at midnight 2`] = `"2022-07-08T07:00:00.000Z"`;
 
-exports[`basic options with utc returns midnight of current UTC day and refreshes at midnight 1`] = `"2022-07-08T00:00:00.000Z"`;
+exports[`basic options with utc returns midnight of current UTC day and refreshes at midnight UTC 1`] = `"2022-07-08T00:00:00.000Z"`;
 
-exports[`basic options with utc returns midnight of current UTC day and refreshes at midnight 2`] = `"2022-07-09T00:00:00.000Z"`;
+exports[`basic options with utc returns midnight of current UTC day and refreshes at midnight UTC 2`] = `"2022-07-09T00:00:00.000Z"`;

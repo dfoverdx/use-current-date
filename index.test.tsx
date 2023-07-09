@@ -32,14 +32,13 @@ beforeEach(() => {
 });
 
 describe('basic options', () => {
-  const basicOptionTestCases: [string, string, UseCurrentDateOptions | undefined][] = [
-    ['no options', 'midnight of the current day', undefined],
-    ['empty options', 'midnight of the current day', {}],
-    ['returnCurrentTime', 'current time', { returnCurrentTime: true }],
-    ['utc', 'midnight of current UTC day', { utc: true }],
-  ]
-
-  it.each(basicOptionTestCases)('with %s returns %s and refreshes at midnight', (_, __, options) => {
+  it.each`
+    optsDesc               | returns                          | refreshesAt       | options
+    ${'no options'}        | ${'midnight of the current day'} | ${'midnight'}     | ${undefined}
+    ${'empty options'}     | ${'midnight of the current day'} | ${'midnight'}     | ${{}}
+    ${'returnCurrentTime'} | ${'current time'}                | ${'midnight'}     | ${{ returnCurrentTime: true }}
+    ${'utc'}               | ${'midnight of current UTC day'} | ${'midnight UTC'} | ${{ utc: true }}
+  `('with $optsDesc returns $returns and refreshes at $refreshesAt', ({ options }: { options?: UseCurrentDateOptions }) => {
     render(<TestComp options={options} />);
     expect(renderCount).toBe(1);
     const output = screen.getByTestId<HTMLDivElement>('date-output');
@@ -86,6 +85,22 @@ describe('with refreshAt', () => {
     expect(renderCount).toBe(2);
 
     advanceTimers(4);
+    expect(renderCount).toBe(2);
+
+    advanceTimers(1);
+    expect(renderCount).toBe(3);
+  });
+
+  it('mods numbers by 24 hours', () => {
+    advanceTimers(getTimeToNextMidnight());
+    render(<TestComp options={{ refreshAt: [durMs(1, 'day') + durMs(5, 'minutes')]}} />);
+    advanceTimers(durMs(5, 'minutes') - 1);
+    expect(renderCount).toBe(1);
+
+    advanceTimers(1);
+    expect(renderCount).toBe(2);
+
+    advanceTimers(durMs(1, 'day') - 1);
     expect(renderCount).toBe(2);
 
     advanceTimers(1);
