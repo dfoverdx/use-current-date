@@ -1,0 +1,58 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": "$tsc",
+      "group": "build",
+    },
+    {
+      "label": "build --watch",
+      "type": "npm",
+      "script": "watch",
+      "problemMatcher": "$tsc-watch",
+      "detail": "tsc --watch",
+      "group": {
+        "kind": "build",
+        "isDefault": true,
+      },
+    },
+    {
+      "label": "test",
+      "type": "npm",
+      "script": "test",
+      "problemMatcher": {
+        "owner": "jest",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(?:\\s*at .*\\s+)?(.*):(\\d+):(\\d+)(?:\\s*at .*\\s+)?\\n$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+        },
+      },
+      "group": "test",
+    },
+    {
+      "label": "test --watchAll",
+      "type": "npm",
+      "script": "test-watch",
+      "problemMatcher": {
+        "owner": "jest",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(?:\\s*at .*\\s+)?(.*):(\\d+):(\\d+)(?:\\s*at .*\\s+)?\\n$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+        },
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true,
+      },
+    },
+  ]
+}

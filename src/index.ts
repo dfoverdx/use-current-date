@@ -11,7 +11,11 @@ export interface UseCurrentDateOptions {
   returnCurrentTime?: boolean;
 
   /**
-   * If set to `true` uses the UTC date rather than the local date.
+   * If set to `true` uses the UTC date rather than the local date for calculations.
+   *
+   * **NOTE**: Setting this to true `true` does not mean the returned `Date` will return UTC values for `getHours()`,
+   * etc.  You will still need to use `getUTCHours()`, etc. or a wrapping library like
+   * {@link https://momentjs.com/ | moment.js}.
    *
    * @default false
    */
@@ -26,9 +30,9 @@ export interface UseCurrentDateOptions {
    * Strings must be of the format `h:mm:ss.ms`, where `h` is a value between 0 and 23.  Minutes, seconds, and
    * milliseconds are optional.
    *
-   * **NOTE**: if you pass an array, and that array is not dynamic, you should define it outside of the component.  If
-   * it is dynamic, wrap it in {@link React.useState | `useState`} or {@link React.useRef | `useRef`}.  Otherwise, all
-   * of the business logic will run on every refresh.
+   * **NOTE**: if you pass an array and that array is not dynamic, you should define it outside of the component.  If it
+   * is dynamic, wrap it in {@link React.useState | `useState`} or {@link React.useRef | `useRef`}.  Otherwise, all of
+   * the business logic will run on every refresh.
    *
    * @example
    *
@@ -41,7 +45,7 @@ export interface UseCurrentDateOptions {
    *
    * @default 0
    */
-  refreshAt?: RefreshAt;
+  refreshAt?: RefreshAt | [RefreshAt, ...RefreshAt[]];
 
   /**
    * If set, refreshes the state every `interval` milliseconds.  If {@link refreshAt | `refreshAt`} is also set, runs the
@@ -50,11 +54,29 @@ export interface UseCurrentDateOptions {
   interval?: number;
 }
 
-type RefreshAt = string | number | [string | number, ...(string | number)[]];
-
 /**
- * Stores and returns the current `Date`.  Refreshes the component at midnight unless overridden by `options`.  Returns
- * midnight of the current local day unless overridden by `options`.
+ * Returns the current `Date`.  Refreshes the component at midnight unless overridden by `options`.  Returns midnight of
+ * the current local day unless overridden by `options`.
+ *
+ * @example
+ * const MyComponent = () => {
+ *   const currentDateLocal = useCurrentDate();
+ *   const formattedLocal = new Intl.DateTimeFormat(
+ *     'en-US',
+ *     { dateStyle: 'full' }
+ *   ).format(currentDateLocal);
+ *
+ *   const currentDateNYC = useCurrentDate({ utc: true, refreshAt: '20:00' });
+ *   const formattedNYC = new Intl.DateTimeFormat(
+ *     'en-US',
+ *     { dateStyle: 'full', timeZone: 'America/New_York' }
+ *   ).format(currentDateNYC);
+ *
+ *   return <div>
+ *     Today is {formattedLocal}.<br />
+ *     In New York City, it is {formattedNYC}.
+ *   </div>;
+ * };
  */
 export default function useCurrentDate(options?: UseCurrentDateOptions): Date;
 export default function useCurrentDate({
@@ -77,7 +99,7 @@ export default function useCurrentDate({
     let prevRefresh: number;
 
     if (refreshAt == null) {
-      nextRefresh = tomorrowMidnightTime - now;
+      nextRefresh = tomorrowMidnightTime;
       prevRefresh = currentMidnightTime;
     } else {
       const refreshes = getRefreshValues(refreshAt);
@@ -85,17 +107,15 @@ export default function useCurrentDate({
         throw new Error('refreshAt must have at least one value');
       }
 
-      const nextRefreshTime = currentMidnightTime +
+      nextRefresh = currentMidnightTime +
         (refreshes.find(v => currentMidnightTime + v >= now) ?? TWENTY_FOUR_HOURS + refreshes[0]);
-
-      nextRefresh = nextRefreshTime - now;
 
       refreshes.reverse();
       prevRefresh = currentMidnightTime +
         (refreshes.find(v => currentMidnightTime + v < now) ?? TWENTY_FOUR_HOURS + refreshes[0]);
     }
 
-    const timeout = setTimeout(refresh, nextRefresh);
+    const timeout = setTimeout(refresh, nextRefresh - now);
     const clear = setIntervalRelativeTo(refresh, prevRefresh, int!);
 
     return () => {
@@ -122,7 +142,7 @@ const getCurrentMidnight = (utc = false) => {
 const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 const TIME_REGEX = /^([01]?\d|2[0-3])(?::([0-5]\d)(?::([0-5]\d)(?:\.(\d{1,3}))?)?)?$/;
 
-const getRefreshValues = (refreshAt: RefreshAt): number[] =>
+const getRefreshValues = (refreshAt: UseCurrentDateOptions['refreshAt']): number[] =>
   [refreshAt]
     .flat()
     .map(v => {
@@ -131,9 +151,9 @@ const getRefreshValues = (refreshAt: RefreshAt): number[] =>
           return v % TWENTY_FOUR_HOURS;
 
         case 'string':
-          const timeSegments = TIME_REGEX.exec(v)?.slice(1).filter(v => v != null).map(Number);
+          const timeSegments = TIME_REGEX.exec(v.trim())?.slice(1).filter(v => v != null).map(Number);
           if (!timeSegments) {
-            throw new Error(`Invalid refreshAt value time: ${v}`);
+            throw new Error(`Invalid refreshAt value format.  Expected \`h[:mm[:ss[.ms]]]\`.  Received: '${v}'`);
           }
 
           // despite what TSC says, `undefined < 100` is valid javascript and returns false
@@ -144,7 +164,7 @@ const getRefreshValues = (refreshAt: RefreshAt): number[] =>
           return Date.UTC(1970, 0, 1, ...timeSegments);
 
         default:
-          throw new Error(`refreshAt must be a string, a number, or an array of strings and numbers.`);
+          throw new Error(`refreshAt must be a string, a number, or an array of strings and numbers`);
       }
     })
     .sort((a, b) => a - b);
@@ -161,8 +181,14 @@ const setIntervalRelativeTo = (fn: () => void, fromTime: number, ms: number) => 
     interval = setInterval(fn, ms);
   }, ms - ((Date.now() - fromTime) % ms));
 
-  return function clear() {
+  return () => {
     clearTimeout(timeout);
     clearInterval(interval);
-  }
+  };
 }
+
+type RefreshAt = RefreshAtString | number;
+type OptionalStr<T extends string | number> = '' | T;
+
+// alas, TSC complains about "complexity" if I make this match the regex
+type RefreshAtString = `${number}${OptionalStr<`:${number}${OptionalStr<`:${number}${OptionalStr<`.${number}`>}`>}`>}`;

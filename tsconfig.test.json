@@ -5,7 +5,6 @@
     "noUnusedParameters": false
   },
   "include": [
-    "index.ts",
-    "index.test.tsx"
+    "src"
   ]
 }

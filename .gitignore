@@ -1,6 +1,8 @@
 node_modules
 index.d.ts
 index.js
+index.min.js
 *.map
 *.tsbuildinfo
 *.tgz
+coverage

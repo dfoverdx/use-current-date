@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`with empty options, returns midnight of the current day and refreshes at midnight: at midnight 1`] = `"2022-07-08T07:00:00.000Z"`;
+
+exports[`with empty options, returns midnight of the current day and refreshes at midnight: initial output 1`] = `"2022-07-07T07:00:00.000Z"`;
+
+exports[`with no options parameter, returns midnight of the current day and refreshes at midnight: at midnight 1`] = `"2022-07-08T07:00:00.000Z"`;
+
+exports[`with no options parameter, returns midnight of the current day and refreshes at midnight: initial output 1`] = `"2022-07-07T07:00:00.000Z"`;
+
+exports[`with returnCurrentTime, returns current time and refreshes at midnight: at midnight 1`] = `"2022-07-08T07:00:00.000Z"`;
+
+exports[`with returnCurrentTime, returns current time and refreshes at midnight: initial output 1`] = `"2022-07-08T05:15:30.561Z"`;
+
+exports[`with utc, returns midnight of current UTC day and refreshes at midnight UTC: at midnight UTC 1`] = `"2022-07-09T00:00:00.000Z"`;
+
+exports[`with utc, returns midnight of current UTC day and refreshes at midnight UTC: initial output 1`] = `"2022-07-08T00:00:00.000Z"`;

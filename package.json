@@ -10,12 +10,18 @@
     "url": "https://github.com/dfoverdx/use-current-date.git"
   },
   "scripts": {
-    "build": "tsc",
-    "test": "jest"
+    "build": "webpack --mode production && webpack --mode development",
+    "watch": "tsc --watch --noEmit",
+    "test": "jest",
+    "test-watch": "jest --watchAll"
   },
   "files": [
     "index.js",
-    "index.d.ts"
+    "index.min.js",
+    "index.d.ts",
+    "index.js.map",
+    "index.min.js.map",
+    "index.d.ts.map"
   ],
   "license": "MIT",
   "devDependencies": {
@@ -29,9 +35,14 @@
     "npm-bump": "^0.0.33",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-error-boundary": "^4.0.10",
     "react-test-renderer": "^18.2.0",
+    "terser-webpack-plugin": "^5.3.9",
     "ts-jest": "^29.1.1",
-    "typescript": "^5.1.6"
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
