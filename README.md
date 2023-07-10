@@ -2,8 +2,6 @@
 
 A simple utility hook for React that stores and provides the current date as state.  When the date changes, the component renders.
 
-Under the hood, it uses [Moment.js](https://momentjs.com).  The return type can be specified to a `Date` (default), a `Moment`, or a formatted string using the [`moment.format()`](https://momentjs.com/docs/#/displaying/format/) syntax.
-
 ## Installation
 
 You can install the package using either npm or yarn.
@@ -51,6 +49,5 @@ Please make sure to follow the [Contributor's Guide](CONTRIBUTING.md) when submi
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-```
 
 Feel free to modify the content to suit your specific package or add any additional sections you deem necessary.

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { act, cleanup, render, screen } from '@testing-library/react';
 import moment from 'moment';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -7,11 +7,11 @@ import useCurrentDate, { UseCurrentDateOptions } from './index';
 
 let renderCount = 0;
 const TestComp = ({ options }: { options?: UseCurrentDateOptions }) => {
-  const TestCompInner = memo(({ options }: { options?: UseCurrentDateOptions }) => {
+  const TestCompInner = ({ options }: { options?: UseCurrentDateOptions }) => {
     const date = useCurrentDate(options);
     renderCount++;
     return <div data-testid="date-output">{date.toISOString()}</div>;
-  });
+  };
 
   return <ErrorBoundary FallbackComponent={({ error }) => <div data-testid="error">{error.message}</div>}>
     <TestCompInner options={options} />
