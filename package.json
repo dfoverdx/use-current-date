@@ -1,6 +1,6 @@
 {
   "name": "use-current-date",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A react hook that always returns the current date and rerenders the component when the date changes",
   "main": "index.js",
   "types": "index.d.ts",
