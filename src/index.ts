@@ -1,5 +1,4 @@
-import type React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 export interface UseCurrentDateOptions {
   /**
@@ -89,6 +88,8 @@ export default function useCurrentDate({
   int ??= TWENTY_FOUR_HOURS;
 
   const refresh = useRefresh();
+  // force a refresh when the page becomes visible
+  usePageVisibility();
 
   useEffect(() => {
     const currentMidnightTime = getCurrentMidnight(utc).getTime();
@@ -122,7 +123,7 @@ export default function useCurrentDate({
       clearTimeout(timeout);
       clear();
     };
-  }, [int, refreshAt]);
+  }, [int, refreshAt, refresh]);
 
   return returnCurrentTime ? new Date() : getCurrentMidnight(utc);
 }
@@ -171,7 +172,7 @@ const getRefreshValues = (refreshAt: UseCurrentDateOptions['refreshAt']): number
 
 const useRefresh = () => {
   const [, r] = useState({});
-  return () => r({});
+  return useCallback(() => r({}), []);
 }
 
 const setIntervalRelativeTo = (fn: () => void, fromTime: number, ms: number) => {
@@ -192,3 +193,19 @@ type OptionalStr<T extends string | number> = '' | T;
 
 // alas, TSC complains about "complexity" if I make this match the regex
 type RefreshAtString = `${number}${OptionalStr<`:${number}${OptionalStr<`:${number}${OptionalStr<`.${number}`>}`>}`>}`;
+
+// good-enough™ polyfill
+const useSyncExternalStore = React.useSyncExternalStore ?? ((subscribe, getSnapshot) => {
+  const [value, setValue] = useState(getSnapshot());
+  useEffect(() => subscribe(() => setValue(getSnapshot())), [subscribe, getSnapshot]);
+  return value;
+});
+
+const usePageVisibility = () => useSyncExternalStore(subscribe, getSnapshot);
+
+const subscribe = (fn: () => void) => {
+  document.addEventListener('visibilitychange', fn);
+  return () => document.removeEventListener('visibilitychange', fn);
+};
+
+const getSnapshot = () => document.visibilityState === 'visible';
